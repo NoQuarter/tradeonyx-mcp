@@ -1,13 +1,14 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.tradeonyx/tradeonyx",
-  "description": "Trading journal with pattern detection: log trades by voice, review your day, and ground answers in your own trade history.",
+  "title": "TradeOnyx",
+  "description": "Trading journal with pattern detection. Log trades by voice, write and read your journal, and ground answers in your own trade history.",
+  "version": "1.0.0",
+  "websiteUrl": "https://tradeonyx.io",
   "repository": {
     "url": "https://github.com/NoQuarter/tradeonyx-mcp",
     "source": "github"
   },
-  "websiteUrl": "https://tradeonyx.io",
-  "version": "1.0.0",
   "remotes": [
     {
       "type": "streamable-http",
