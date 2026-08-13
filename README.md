@@ -10,7 +10,7 @@ TradeOnyx is a trading journal with pattern detection: it imports trades from
 in your trading. This repository documents its MCP server. It contains no
 product code.
 
-**44 tools · JSON-RPC 2.0 over HTTP · hosted in Germany**
+**45 tools · JSON-RPC 2.0 over HTTP · hosted in Germany**
 
 ---
 
@@ -85,7 +85,7 @@ A few things people actually use it for:
 
 ## Tools
 
-44 tools. 41 are available on the free tier; three bulk aggregations require
+45 tools. 42 are available on the free tier; 3 bulk aggregations require
 Pro Plus. Daily call caps apply per plan and are shown in the app.
 
 
@@ -125,9 +125,10 @@ Pro Plus. Daily call caps apply per plan and are shown in the app.
 | Tool | Plan | Description |
 |---|---|---|
 | `journal_attachment_list` | Free | List every screenshot attached to one of the user's journal entries. Returns id, public URL, caption, mime type and uploaded_at for each attachment. |
-| `journal_attachment_upload` | Free | Attach a screenshot to one of the user's journal entries.\n\nPREFERRED PATHS (in priority order):\n1. If the user shared an HTTPS URL of the image... |
+| `journal_attachment_upload` | Free | Attach a screenshot to one of the user's journal entries. PREFERRED PATHS (in priority order): 1. If the user shared an HTTPS URL of the image (Tra... |
 | `journal_entry_get` | Free | Read the journal entry for a specific date (or null if none). |
-| `journal_entry_list` | Pro Plus | List journal entries within a date range. Useful for review summaries. Pro Plus only — bulk journal reads are part of the analysis suite. |
+| `journal_entry_list` | Pro Plus | List journal entries within a date range. Pro Plus only. |
+| `journal_entry_search` | Free | Search the user's own journal entries by words or phrases. Multiple words are ANDed; wrap a phrase in double quotes to match it in order. Searches... |
 | `journal_entry_upsert` | Free | Create or update the journal entry for a date. Required: date (YYYY-MM-DD). Pass any subset of the six markdown sections — others are left unchange... |
 | `journal_planned_playbook_clear` | Free | Drop every planned-playbook for a calendar day. Idempotent — returns ``removed_count=0`` if nothing was planned. Returns ``journal_id=null`` if the... |
 | `journal_planned_playbook_set` | Free | Set the morning-plan playbooks for a calendar day. Replaces the existing set atomically — idempotent on re-call. Creates the JournalEntry if one do... |
@@ -156,7 +157,7 @@ Pro Plus. Daily call caps apply per plan and are shown in the app.
 
 | Tool | Plan | Description |
 |---|---|---|
-| `playbook_create` | Free | Create a new strategy playbook with entry/exit criteria. |
+| `playbook_create` | Free | Create a new strategy playbook with entry/exit criteria. Required: name (max 80 chars). description / rules / entry_criteria / exit_criteria are ma... |
 | `playbook_delete` | Free | Soft-delete a playbook (sets active=false). Historical trade attribution stays intact — the playbook just hides from the active picker. Idempotent. |
 | `playbook_list` | Free | List the user's strategy playbooks. optional account_id narrows to playbooks visible on that account (global ones + that account's). Omit to get ev... |
 | `playbook_update` | Free | Modify an existing playbook. Required: playbook_id. Any field omitted is left unchanged. Pass active=false to archive without losing history (same... |
@@ -165,7 +166,7 @@ Pro Plus. Daily call caps apply per plan and are shown in the app.
 
 | Tool | Plan | Description |
 |---|---|---|
-| `stats_summary` | Pro Plus | Aggregate performance stats over a recent period (default 30 days). Use this to ground journal-writing in actual numbers instead of guessing. Pro P... |
+| `stats_summary` | Pro Plus | Aggregate performance stats over a recent period (default 30 days): win rate, expectancy, totals. Pro Plus only. |
 
 ### Strategies
 
@@ -181,8 +182,8 @@ Pro Plus. Daily call caps apply per plan and are shown in the app.
 
 | Tool | Plan | Description |
 |---|---|---|
-| `tag_create` | Free | Create a new tag in the user's library. Required: name |
-| `tag_delete` | Free | Hard-delete a tag. Refuses if the tag is still attached to any trades — error message includes the attachment count so the LLM can ask the user to... |
+| `tag_create` | Free | Create a new tag in the user's library. Required: name (max 40 chars). Idempotent on name — returns existing row with created=false if the tag is a... |
+| `tag_delete` | Free | Hard-delete a tag. Refuses if the tag is still attached to any trades; the error message states how many attachments block the delete. |
 | `tag_list` | Free | List the user's tags (setup / mistake / psychology / custom). |
 | `tag_update` | Free | Rename a tag or change its category / color. Required: tag_id. Returns updated_fields so the caller can confirm which keys persisted. Errors with '... |
 
@@ -192,7 +193,7 @@ Pro Plus. Daily call caps apply per plan and are shown in the app.
 |---|---|---|
 | `trade_ai_analysis_get` | Free | Read the cached coach-style AI analysis for one of the user's trades. The analysis is one-shot per trade — once written via the dashboard, every re... |
 | `trade_attachment_list` | Free | List every screenshot attached to one of the user's trades. Returns id, public URL, caption, mime type and uploaded_at for each attachment. |
-| `trade_attachment_upload` | Free | Attach a screenshot to one of the user's trades.\n\nPREFERRED PATHS (in priority order):\n1. If the user shared an HTTPS URL of the image (TradingV... |
+| `trade_attachment_upload` | Free | Attach a screenshot to one of the user's trades. PREFERRED PATHS (in priority order): 1. If the user shared an HTTPS URL of the image (TradingView... |
 | `trade_create` | Free | Manually insert a trade (open or closed). Required: symbol, trade_type, volume, open_price. trade_type must be 'BUY' or 'SELL' (uppercase). open_ti... |
 | `trade_get` | Free | Get full details of one trade owned by the user. |
 | `trade_list` | Pro Plus | List the user's trades. Filter by date range, symbol, or open/closed status. Returns up to `limit` rows (default 100, max 500) sorted by open_time... |
@@ -225,8 +226,10 @@ Prices and current limits are on the [pricing page](https://tradeonyx.io/pricing
 
 ## Privacy and security
 
-- Servers are in Germany, data stays in the EU, GDPR applies. Processors are
-  named in the [privacy policy](https://tradeonyx.io/datenschutz).
+- Servers are in Germany and your journal and trades stay in the EU. The AI
+  features send the text they analyse to a processor in the United States;
+  every processor is named in the [privacy policy](https://tradeonyx.io/datenschutz),
+  which is the authoritative list.
 - Tokens are stored as SHA-256 hashes; the raw value exists only in your
   clipboard.
 - Every tool resolves data through the authenticated user. A token reaches
