@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.tradeonyx/tradeonyx",
   "title": "TradeOnyx",
-  "description": "Trading journal with pattern detection. Log trades by voice, write and read your journal, and ground answers in your own trade history.",
+  "description": "Trading journal with pattern detection: log trades by voice, query your own history.",
   "version": "1.0.0",
   "websiteUrl": "https://tradeonyx.io",
   "repository": {
