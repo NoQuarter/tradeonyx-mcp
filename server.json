@@ -1,0 +1,17 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "name": "io.tradeonyx/tradeonyx",
+  "description": "Trading journal with pattern detection: log trades by voice, review your day, and ground answers in your own trade history.",
+  "repository": {
+    "url": "https://github.com/NoQuarter/tradeonyx-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://tradeonyx.io",
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://tradeonyx.io/mcp"
+    }
+  ]
+}
