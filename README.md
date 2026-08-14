@@ -10,7 +10,7 @@ TradeOnyx is a trading journal with pattern detection: it imports trades from
 in your trading. This repository documents its MCP server. It contains no
 product code.
 
-**45 tools · JSON-RPC 2.0 over HTTP · hosted in Germany**
+**47 tools · JSON-RPC 2.0 over HTTP · hosted in Germany**
 
 ---
 
@@ -85,7 +85,7 @@ A few things people actually use it for:
 
 ## Tools
 
-45 tools. 42 are available on the free tier; 3 bulk aggregations require
+47 tools. 44 are available on the free tier; 3 bulk aggregations require
 Pro Plus. Daily call caps apply per plan and are shown in the app.
 
 
@@ -195,6 +195,7 @@ Pro Plus. Daily call caps apply per plan and are shown in the app.
 | `trade_attachment_list` | Free | List every screenshot attached to one of the user's trades. Returns id, public URL, caption, mime type and uploaded_at for each attachment. |
 | `trade_attachment_upload` | Free | Attach a screenshot to one of the user's trades. PREFERRED PATHS (in priority order): 1. If the user shared an HTTPS URL of the image (TradingView... |
 | `trade_create` | Free | Manually insert a trade (open or closed). Required: symbol, trade_type, volume, open_price. trade_type must be 'BUY' or 'SELL' (uppercase). open_ti... |
+| `trade_delete` | Free | Delete a trade that was logged manually or through this connector, together with its review, tags, attachments and AI analysis. Broker-imported trades are refused: the next sync would reconcile them against the statement again. Use this to withdraw a trade entered with wrong values, since gross_pl cannot be edited afterwards. |
 | `trade_get` | Free | Get full details of one trade owned by the user. |
 | `trade_list` | Pro Plus | List the user's trades. Filter by date range, symbol, or open/closed status. Returns up to `limit` rows (default 100, max 500) sorted by open_time... |
 | `trade_review_update` | Free | Upsert the post-trade review for a trade. Required: trade_id. Common stumbles: mood_before/mood_after are INTEGERS 1-5 (NOT enum strings like 'calm... |
@@ -205,6 +206,7 @@ Pro Plus. Daily call caps apply per plan and are shown in the app.
 | Tool | Plan | Description |
 |---|---|---|
 | `trading_rule_create` | Free | Create a new discipline / trading rule. Required: text (the rule label, max 200 chars). optional account_id confines the rule to one account; omit... |
+| `trading_rule_delete` | Free | Delete one of the user's trading rules. Also removes the record of every time the rule was broken, because the journal's rule-violation entries cascade with it. To stop following a rule but keep that history, set active=false with trading_rule_update instead. |
 | `trading_rule_list` | Free | List the user's discipline / trading rules. optional account_id narrows to rules visible on that account (global + that-account). |
 | `trading_rule_update` | Free | Modify or deactivate a trading rule. Required: rule_id. Pass active=false to soft-delete (rule disappears from picker, history preserved). account_... |
 
