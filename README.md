@@ -101,9 +101,31 @@ Daily tool-call caps, counted per UTC day and shown in the app:
 | Pro | 150 |
 | Pro Plus | 2000 |
 
-A call over the cap is refused with a structured JSON-RPC error naming the cap
-and when it resets, so an assistant can say what happened instead of failing
-silently.
+A call over the cap comes back as a normal tool result with `isError: true`,
+naming the cap and when it resets, so an assistant can say what happened
+instead of failing silently. It is HTTP 200: a cap is a business rule, not a
+malformed request, and the specification's own worked example of a tool
+execution error is an upstream rate limit.
+
+### How errors arrive
+
+Two levels, and which one you get tells you whether the fix is in your
+arguments or in the data:
+
+* **Wrong arguments** come back as a JSON-RPC error with code `-32602` and
+  `data.code = "invalid_arguments"`. That covers an unknown tool, an argument
+  name the tool does not accept, a value outside a declared `enum`, and a
+  value past a declared `maxLength` / `maxItems` / `maximum`. Everything in
+  that list is declared in the `inputSchema` you already hold, so a client
+  can correct it without asking.
+* **Everything else** comes back as a tool result with `isError: true` and a
+  message in `content`: a row that does not exist, a value the database will
+  not store, a plan that does not include the tool, the daily cap.
+
+Both are HTTP 200, because the transport requires exactly one JSON object per
+request. Values past a declared bound are **refused, not shortened**: a 5000
+character note is rejected with the limit named rather than stored as its
+first 2000 characters, so what you keep is what you sent.
 
 
 ### Accounts
@@ -193,7 +215,7 @@ silently.
 | `strategy_delete` | Trial / Pro | Hard-delete a Strategy. Trades tagged with it have their strategy_id reset to NULL (history preserved). If the deleted row was the default, the nex... |
 | `strategy_list` | Trial / Pro | List the user's named trading strategies (e.g. 'Forex-Swing', 'Crypto-Scalp'). Each row carries narrative / edge / setups / focus symbols / rules /... |
 | `strategy_set_default` | Trial / Pro | Mark a Strategy as the user's default. New trades + imports get auto-tagged with the default. Flips every other Strategy's is_default off. |
-| `strategy_update` | Trial / Pro | Modify a named Strategy. Pass strategy_id + any subset of the payload fields. Editing any field invalidates the AI-context caches that referenced t... |
+| `strategy_update` | Trial / Pro | Modify a named Strategy. Pass strategy_id + any subset of the payload fields. A supplied list (setups, symbols_focus, rules, trading_hours) replaces the stored one, so send every entry you want to keep; omit the field to leave it untouched. This is why the tool is annotated `destructiveHint: true` while `strategy_create` is not. Editing any field invalidates the AI-context caches that referenced t... |
 
 ### Tags
 
