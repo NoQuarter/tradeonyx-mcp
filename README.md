@@ -10,7 +10,7 @@ TradeOnyx is a trading journal with pattern detection: it imports trades from
 in your trading. This repository documents its MCP server. It contains no
 product code.
 
-**47 tools · JSON-RPC 2.0 over HTTP · hosted in Germany**
+**48 tools · JSON-RPC 2.0 over HTTP · hosted in Germany**
 
 ---
 
@@ -90,7 +90,7 @@ A few things people actually use it for:
 
 ## Tools
 
-47 tools. 44 need an active connector trial, Pro or Pro Plus; the 3 bulk
+48 tools. 45 need an active connector trial, Pro or Pro Plus; the 3 bulk
 aggregations need Pro Plus. The **Plan** column below says which.
 
 Daily tool-call caps, counted per UTC day and shown in the app:
@@ -133,6 +133,7 @@ first 2000 characters, so what you keep is what you sent.
 | Tool | Plan | Description |
 |---|---|---|
 | `account_list` | Trial / Pro | List the user's trading accounts (id / name / type / is_active / FIFO-vs-LIFO). The is_active flag points at the dashboard's active account, which... |
+| `settings_get` | Trial / Pro | Read the account-level limits the discipline checks and the weekly digest enforce: capital, risk per trade, daily and weekly loss limits, monthly goal, whether overnight positions are allowed, timezone. Percentages come back as percentages plus `risk_per_trade_amount` in the account currency. Read-only: these cannot be changed through the connector, and `risk_per_trade` on the strategy tools is a per-strategy annotation that does not move this budget. |
 
 ### Attachments
 
@@ -238,7 +239,7 @@ first 2000 characters, so what you keep is what you sent.
 | `trade_get` | Trial / Pro | Get full details of one trade owned by the user. |
 | `trade_list` | Pro Plus | List the user's trades. Filter by date range, symbol, or open/closed status. Returns up to `limit` rows (default 100, max 500) sorted by open_time... |
 | `trade_review_update` | Trial / Pro | Upsert the post-trade review for a trade. Required: trade_id. Common stumbles: mood_before/mood_after are INTEGERS 1-5 (NOT enum strings like 'calm... |
-| `trade_update` | Trial / Pro | Edit user-mutable fields on an existing trade: sl, tp, comment, external_url, playbook_id, target_rr, mfe_price, mae_price. Broker-truth fields (gr... |
+| `trade_update` | Trial / Pro | Edit user-mutable fields on an existing trade: sl, tp, comment, external_url, playbook_id, strategy_id, target_rr, mfe_price, mae_price. Also closes an open position: send close_price and close_time together on a trade that is still open and was not broker-imported, and gross_pl is derived from the two prices when the instrument is quoted in the account's currency. Broker-truth fields (gr... |
 
 ### Trading rules
 
