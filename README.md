@@ -10,7 +10,7 @@ TradeOnyx is a trading journal with pattern detection: it imports trades from
 in your trading. This repository documents its MCP server. It contains no
 product code.
 
-**48 tools · JSON-RPC 2.0 over HTTP · hosted in Germany**
+**49 tools · JSON-RPC 2.0 over HTTP · hosted in Germany**
 
 ---
 
@@ -90,7 +90,7 @@ A few things people actually use it for:
 
 ## Tools
 
-48 tools. 45 need an active connector trial, Pro or Pro Plus; the 3 bulk
+49 tools. 45 need an active connector trial, Pro or Pro Plus; the 4 bulk
 aggregations need Pro Plus. The **Plan** column below says which.
 
 Daily tool-call caps, counted per UTC day and shown in the app:
@@ -206,7 +206,8 @@ first 2000 characters, so what you keep is what you sent.
 
 | Tool | Plan | Description |
 |---|---|---|
-| `stats_summary` | Pro Plus | Aggregate performance stats over a recent period (default 30 days): win rate, expectancy, totals. Pro Plus only. |
+| `stats_summary` | Pro Plus | Aggregate performance stats over a recent period (default 30 days): win rate, expectancy, totals. Accepts `tag_ids` to restrict every figure to trades carrying any of those tags, and `date_from` / `date_to` for a named month. Pro Plus only. |
+| `tag_performance_get` | Pro Plus | Performance per tag over closed trades: trade count, win rate, gross and net P&L, profit factor, average win, average loss, expectancy. Answers "which of my setups actually makes money". Covers the whole history by default, since a tag needs a sample. Tags with fewer than `min_trades` (default 5) closed trades come back by name without figures rather than being dropped. A trade with two tags counts under both, so the rows do not sum to the account result. Pro Plus only. |
 
 ### Strategies
 
@@ -237,7 +238,7 @@ first 2000 characters, so what you keep is what you sent.
 | `trade_create` | Trial / Pro | Manually insert a trade (open or closed). Required: symbol, trade_type, volume, open_price. trade_type must be 'BUY' or 'SELL' (uppercase). open_ti... |
 | `trade_delete` | Trial / Pro | Delete a trade that was logged manually or through this connector, together with its review, tags, attachments and AI analysis. Broker-imported trades are refused: the next sync would reconcile them against the statement again. Use this to withdraw a trade entered with wrong values, since gross_pl cannot be edited afterwards. |
 | `trade_get` | Trial / Pro | Get full details of one trade owned by the user. |
-| `trade_list` | Pro Plus | List the user's trades. Filter by date range, symbol, or open/closed status. Returns up to `limit` rows (default 100, max 500) sorted by open_time... |
+| `trade_list` | Pro Plus | List the user's trades. Filter by date range, symbol, tag (`tag_ids`, any-of), direction (`trade_type`) or open/closed status. Returns up to `limit` rows (default 100, max 500) sorted by open_time... |
 | `trade_review_update` | Trial / Pro | Upsert the post-trade review for a trade. Required: trade_id. Common stumbles: mood_before/mood_after are INTEGERS 1-5 (NOT enum strings like 'calm... |
 | `trade_update` | Trial / Pro | Edit user-mutable fields on an existing trade: sl, tp, comment, external_url, playbook_id, strategy_id, target_rr, mfe_price, mae_price. Also closes an open position: send close_price and close_time together on a trade that is still open and was not broker-imported, and gross_pl is derived from the two prices when the instrument is quoted in the account's currency. Broker-truth fields (gr... |
 
@@ -263,7 +264,7 @@ first 2000 characters, so what you keep is what you sent.
 | Connector access | no | yes, 7 days, once per account | yes | yes |
 | Daily tool calls | — | 30 | 150 | 2000 |
 | Logging + journal tools | — | yes | yes | yes |
-| Bulk aggregations (`trade_list`, `journal_entry_list`, `stats_summary`) | — | no | no | yes |
+| Bulk aggregations (`trade_list`, `journal_entry_list`, `stats_summary`, `tag_performance_get`) | — | no | no | yes |
 | Journal, broker imports and tax export in the web app | yes | yes | yes | yes |
 
 A free account starts the connector trial once, under **Settings →
